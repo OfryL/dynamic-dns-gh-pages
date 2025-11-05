@@ -1,5 +1,5 @@
 import { readFile } from 'fs/promises';
-import type { IPData, IPCheckResult, Config } from './types.js';
+import type { IPCheckResult, Config } from './types.js';
 
 export async function fetchCurrentIP(apiUrl: string): Promise<string> {
   try {
@@ -17,8 +17,8 @@ export async function fetchCurrentIP(apiUrl: string): Promise<string> {
 export async function loadPreviousIP(filePath: string): Promise<string | undefined> {
   try {
     const content = await readFile(filePath, 'utf-8');
-    const data = JSON.parse(content) as IPData;
-    return data.ip;
+    const match = content.match(/<meta name="dynamic-dns-ip" content="([^"]+)">/);
+    return match ? match[1] : undefined;
   } catch {
     return undefined;
   }
@@ -26,7 +26,7 @@ export async function loadPreviousIP(filePath: string): Promise<string | undefin
 
 export async function checkIPChange(config: Config): Promise<IPCheckResult> {
   const currentIP = await fetchCurrentIP(config.ipApiUrl);
-  const previousIP = await loadPreviousIP(config.ipDataFilePath);
+  const previousIP = await loadPreviousIP(config.htmlFilePath);
 
   const changed = currentIP !== previousIP;
 

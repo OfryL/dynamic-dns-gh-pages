@@ -1,7 +1,7 @@
-import { writeFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 import { execSync } from 'child_process';
 import { dirname } from 'path';
-import type { IPData, Config } from './types.js';
+import type { Config } from './types.js';
 
 function execGit(command: string, cwd: string): void {
   try {
@@ -11,22 +11,25 @@ function execGit(command: string, cwd: string): void {
   }
 }
 
-export async function updateIPFile(ip: string, filePath: string): Promise<void> {
-  const data: IPData = {
-    ip,
-    updatedAt: new Date().toISOString(),
-  };
+export async function updateHTMLFile(ip: string, filePath: string): Promise<void> {
+  const updatedAt = new Date().toISOString();
 
-  await writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+  const htmlTemplate = await readFile(filePath, 'utf-8');
+
+  const updatedHTML = htmlTemplate
+    .replace(/\{\{IP\}\}/g, ip)
+    .replace(/\{\{UPDATED_AT\}\}/g, updatedAt);
+
+  await writeFile(filePath, updatedHTML, 'utf-8');
 }
 
 export async function commitAndPush(config: Config, ip: string): Promise<void> {
-  const repoRoot = dirname(dirname(dirname(config.ipDataFilePath)));
+  const repoRoot = dirname(dirname(config.htmlFilePath));
 
   execGit(`git config user.name "${config.gitUserName}"`, repoRoot);
   execGit(`git config user.email "${config.gitUserEmail}"`, repoRoot);
 
-  execGit('git add docs/ip.json', repoRoot);
+  execGit('git add docs/index.html', repoRoot);
 
   try {
     execGit(`git commit -m "Update IP to ${ip}"`, repoRoot);
@@ -42,6 +45,6 @@ export async function commitAndPush(config: Config, ip: string): Promise<void> {
 }
 
 export async function updateAndCommit(config: Config, ip: string): Promise<void> {
-  await updateIPFile(ip, config.ipDataFilePath);
+  await updateHTMLFile(ip, config.htmlFilePath);
   await commitAndPush(config, ip);
 }

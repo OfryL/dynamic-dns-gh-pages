@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="dynamic-dns-ip" content="{{IP}}">
+    <meta name="dynamic-dns-updated" content="{{UPDATED_AT}}">
+    <meta http-equiv="refresh" content="1;url=http://{{IP}}">
     <title>Dynamic DNS Redirect</title>
     <style>
         body {
@@ -18,6 +21,33 @@
         .container {
             text-align: center;
             padding: 2rem;
+            max-width: 600px;
+        }
+        .info-header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.75rem 0;
+            padding: 0.5rem 0;
+        }
+        .info-row:not(:last-child) {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .info-label {
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        .info-value {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.95em;
+            opacity: 0.95;
         }
         .spinner {
             border: 4px solid rgba(255, 255, 255, 0.3);
@@ -32,52 +62,23 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .error {
-            color: #ff6b6b;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Dynamic DNS</h1>
-        <p>Redirecting to your current IP address...</p>
+        <div class="info-header">
+            <div class="info-row">
+                <span class="info-label">Current IP:</span>
+                <span class="info-value">{{IP}}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Last Updated:</span>
+                <span class="info-value">{{UPDATED_AT}}</span>
+            </div>
+        </div>
+        <p>Redirecting to http://{{IP}} in 1 second...</p>
         <div class="spinner"></div>
-        <div id="status"></div>
     </div>
-
-    <script>
-        async function redirect() {
-            try {
-                const response = await fetch('./ip.json');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch IP data');
-                }
-
-                const data = await response.json();
-                const ip = data.ip;
-
-                if (!ip) {
-                    throw new Error('No IP address found');
-                }
-
-                document.getElementById('status').textContent = `Redirecting to ${ip}...`;
-
-                setTimeout(() => {
-                    window.location.href = `http://${ip}`;
-                }, 1000);
-
-            } catch (error) {
-                document.getElementById('status').innerHTML =
-                    `<div class="error">Error: ${error.message}<br>Please try again later.</div>`;
-                console.error('Redirect error:', error);
-            }
-        }
-
-        redirect();
-    </script>
 </body>
 </html>

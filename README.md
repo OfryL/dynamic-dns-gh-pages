@@ -28,7 +28,7 @@ A TypeScript-based dynamic DNS solution that monitors your public IP address and
 This project automatically:
 1. Polls your public IP address at configurable intervals
 2. Detects IP address changes
-3. Updates a JSON file in the repository
+3. Updates the HTML file with embedded IP data
 4. Commits and pushes changes to GitHub
 5. Serves a GitHub Pages site that redirects visitors to your current IP
 
@@ -40,8 +40,9 @@ This project automatically:
 ✓ **Configurable Polling** - Set check interval via environment variable
 ✓ **Multiple Deployment Options** - Daemon, cron, Docker, or GitHub Actions
 ✓ **Automatic Git Integration** - Commits and pushes IP changes
-✓ **GitHub Pages Redirect** - Simple HTTP redirect to your current IP
-✓ **Zero External Dependencies** - Redirect page uses pure HTML/JavaScript
+✓ **GitHub Pages Redirect** - Meta refresh redirect to your current IP
+✓ **Zero JavaScript** - Redirect page uses pure HTML with meta tags
+✓ **SEO-Friendly** - IP data stored in meta tags for crawlers
 ✓ **Error Handling** - Comprehensive error handling and logging
 
 ---
@@ -52,19 +53,19 @@ This project automatically:
 graph TD
     A[IP Checker] -->|Fetch from API| B[Current IP]
     B -->|Compare| C{IP Changed?}
-    C -->|Yes| D[Update ip.json]
+    C -->|Yes| D[Update HTML Template]
     C -->|No| E[Skip Update]
     D --> F[Git Commit & Push]
     F --> G[GitHub Repository]
     G --> H[GitHub Pages]
-    H --> I[Visitor Redirect]
+    H --> I[Meta Refresh Redirect]
     I --> J[http://your.ip.address]
 ```
 
 **Components:**
 - **TypeScript Client**: Monitors IP and manages git operations
-- **docs/ip.json**: Stores current IP and timestamp
-- **docs/index.html**: GitHub Pages redirect page
+- **docs/index.html**: Stores IP data in meta tags and provides redirect
+- **Template System**: Uses placeholders ({{IP}}, {{UPDATED_AT}}) for dynamic content
 - **GitHub Actions**: Optional cloud-based execution
 
 ---
@@ -115,7 +116,7 @@ cp env.template .env
 | `IP_API_URL` | `https://api.ipify.org?format=json` | API endpoint for IP detection |
 | `GIT_USER_NAME` | `Dynamic DNS Bot` | Git commit author name |
 | `GIT_USER_EMAIL` | `bot@dynamic-dns.local` | Git commit author email |
-| `IP_DATA_FILE_PATH` | `docs/ip.json` | Path to IP data file (optional) |
+| `HTML_FILE_PATH` | `docs/index.html` | Path to HTML template file (optional) |
 
 **Alternative IP APIs:**
 - `https://api.ipify.org?format=json`
@@ -354,9 +355,9 @@ npm run clean
 ### GitHub Pages Not Redirecting
 
 1. **Verify Pages is enabled** in repository settings
-2. **Check `docs/ip.json` exists** and has valid content
+2. **Check `docs/index.html` exists** and has IP placeholders filled
 3. **Wait 1-2 minutes** for Pages to rebuild
-4. **Check browser console** for JavaScript errors
+4. **Verify meta tags** in HTML source contain actual IP (not {{IP}} placeholder)
 
 ### Permission Errors
 

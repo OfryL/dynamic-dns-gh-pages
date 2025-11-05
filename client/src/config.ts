@@ -18,6 +18,6 @@ export function getConfig(): Config {
     ipApiUrl: getEnvOrDefault('IP_API_URL', 'https://api.ipify.org?format=json'),
     gitUserName: getEnvOrDefault('GIT_USER_NAME', 'Dynamic DNS Bot'),
     gitUserEmail: getEnvOrDefault('GIT_USER_EMAIL', 'bot@dynamic-dns.local'),
-    ipDataFilePath: getEnvOrDefault('IP_DATA_FILE_PATH', resolve(__dirname, '../../../docs/ip.json')),
+    htmlFilePath: getEnvOrDefault('HTML_FILE_PATH', resolve(__dirname, '../../docs/index.html')),
   };
 }
