@@ -38,9 +38,10 @@ This project automatically:
 
 ✓ **TypeScript** - Type-safe, maintainable code
 ✓ **Configurable Polling** - Set check interval via environment variable
-✓ **Multiple Deployment Options** - Daemon, cron, Docker, or GitHub Actions
+✓ **Multiple Deployment Options** - Daemon, cron, or Docker (local execution)
 ✓ **Automatic Git Integration** - Commits and pushes IP changes
 ✓ **GitHub Pages Redirect** - Meta refresh redirect to your current IP
+✓ **Auto-Deploy** - GitHub Actions automatically deploys changes
 ✓ **Zero JavaScript** - Redirect page uses pure HTML with meta tags
 ✓ **SEO-Friendly** - IP data stored in meta tags for crawlers
 ✓ **Error Handling** - Comprehensive error handling and logging
@@ -67,7 +68,7 @@ graph TD
 - **client/index.template.html**: HTML template with placeholders
 - **docs/index.html**: Generated output with actual IP data and redirect
 - **Template System**: Uses placeholders ({{IP}}, {{UPDATED_AT}}) for dynamic content
-- **GitHub Actions**: Optional cloud-based execution
+- **GitHub Actions**: Automatic Pages deployment when docs/ changes
 
 ---
 
@@ -218,30 +219,21 @@ docker-compose down
 
 ---
 
-### 7.4 GitHub Actions
+### 7.4 GitHub Actions (Pages Deployment Only)
 
-Run automatically in the cloud (no local client needed):
+The GitHub Actions workflow automatically deploys the GitHub Pages site when changes are pushed to the `docs/` directory.
 
-**Setup:**
+**What it does:**
 
-1. GitHub Actions workflow is already configured in `.github/workflows/update-ip.yml`
-2. Runs every 15 minutes automatically
-3. No additional configuration needed
+- Triggers on push to `main` branch when `docs/**` files change
+- Deploys static content from `docs/` folder to GitHub Pages
+- No IP checking or client execution
 
 **Manual Trigger:**
 
-Go to Actions tab → "Update IP Address" → "Run workflow"
+Go to Actions tab → "Deploy GitHub Pages" → "Run workflow"
 
-**Adjust Schedule:**
-
-Edit `.github/workflows/update-ip.yml` and change the cron expression:
-
-```yaml
-schedule:
-  - cron: '*/15 * * * *'  # Every 15 minutes
-```
-
-**Note:** GitHub Actions won't detect IP changes of your local machine - only the IP of GitHub's runners. Use this method only if you want to track GitHub's infrastructure IP or if running a webhook/API to report your actual IP.
+**Note:** This workflow only handles GitHub Pages deployment. IP checking and updates must be run locally using one of the other deployment methods (daemon, cron, or Docker).
 
 ---
 
@@ -252,19 +244,26 @@ schedule:
 1. Go to repository **Settings**
 2. Navigate to **Pages** section
 3. Under **Source**, select:
-   - **Branch**: `main`
-   - **Folder**: `/docs`
-4. Click **Save**
+   - **Build and deployment**: GitHub Actions
+4. The workflow will automatically deploy when you push changes to `docs/`
 
 ### Access Your Site
 
-After enabling Pages, your site will be available at:
+After the workflow runs, your site will be available at:
 
 ```
 https://<your-username>.github.io/<repo-name>/
 ```
 
 The page will automatically redirect visitors to `http://<your-current-ip>`
+
+### How Deployment Works
+
+1. Local client updates `docs/index.html` with current IP
+2. Changes are committed and pushed to GitHub
+3. GitHub Actions workflow detects changes in `docs/`
+4. Workflow automatically deploys to GitHub Pages
+5. Site is updated within seconds
 
 ---
 
