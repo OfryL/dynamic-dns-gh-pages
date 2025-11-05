@@ -84,7 +84,7 @@ graph TD
 
 ```bash
 git clone <your-repo-url>
-cd dynamic-dns-gh-pages
+cd dynamic-dns-gh-pages/client
 npm install
 ```
 
@@ -103,6 +103,7 @@ npm run build
 Copy `env.template` to `.env` and configure:
 
 ```bash
+cd client
 cp env.template .env
 ```
 
@@ -130,6 +131,7 @@ cp env.template .env
 Run as a continuous background process:
 
 ```bash
+cd client
 npm run daemon
 ```
 
@@ -141,6 +143,7 @@ This will:
 **Use with Process Manager (pm2):**
 
 ```bash
+cd client
 npm install -g pm2
 pm2 start npm --name "dynamic-dns" -- run daemon
 pm2 save
@@ -155,7 +158,7 @@ Run as a scheduled task using cron:
 
 1. **Make script executable:**
    ```bash
-   chmod +x scripts/run-once.sh
+   chmod +x client/scripts/run-once.sh
    ```
 
 2. **Add to crontab:**
@@ -165,7 +168,7 @@ Run as a scheduled task using cron:
 
 3. **Add entry (runs every 15 minutes):**
    ```cron
-   */15 * * * * /path/to/dynamic-dns-gh-pages/scripts/run-once.sh
+   */15 * * * * /path/to/dynamic-dns-gh-pages/client/scripts/run-once.sh
    ```
 
 4. **Create logs directory:**
@@ -182,6 +185,7 @@ Run in a containerized environment:
 #### Build and Run
 
 ```bash
+cd client
 docker-compose up -d
 ```
 
@@ -201,13 +205,13 @@ docker-compose down
 
 1. **SSH Keys** (for git push):
    ```bash
-   mkdir -p ssh-keys
-   cp ~/.ssh/id_rsa ssh-keys/
-   cp ~/.ssh/id_rsa.pub ssh-keys/
+   mkdir -p client/ssh-keys
+   cp ~/.ssh/id_rsa client/ssh-keys/
+   cp ~/.ssh/id_rsa.pub client/ssh-keys/
    ```
 
 2. **Configure Environment:**
-   Edit `docker-compose.yml` or create `.env` file
+   Edit `client/docker-compose.yml` or create `client/.env` file
 
 ---
 
@@ -265,29 +269,28 @@ The page will automatically redirect visitors to `http://<your-current-ip>`
 
 ```
 dynamic-dns-gh-pages/
-├── client/                          # TypeScript client
-│   ├── src/
-│   │   ├── index.ts                # Main entry point
-│   │   ├── ip-checker.ts           # IP detection logic
-│   │   ├── git-updater.ts          # Git operations
-│   │   ├── config.ts               # Configuration management
-│   │   └── types.ts                # TypeScript interfaces
-│   ├── package.json                # Client dependencies
-│   ├── tsconfig.json               # TypeScript configuration
-│   └── Dockerfile                  # Docker build instructions
-├── docs/                            # GitHub Pages content
-│   ├── index.html                  # Redirect page
-│   └── ip.json                     # Current IP data
+├── README.md                       # This file
+├── .gitignore                      # Git ignore patterns
 ├── .github/
 │   └── workflows/
 │       └── update-ip.yml           # GitHub Actions workflow
-├── scripts/
-│   └── run-once.sh                 # Cron execution script
-├── docker-compose.yml              # Docker Compose configuration
-├── env.template                    # Environment variables template
-├── package.json                    # Root workspace configuration
-├── .gitignore                      # Git ignore patterns
-└── README.md                       # This file
+├── docs/                           # GitHub Pages content
+│   ├── index.html                  # Redirect page
+│   └── ip.json                     # Current IP data
+└── client/                         # TypeScript client
+    ├── src/
+    │   ├── index.ts                # Main entry point
+    │   ├── ip-checker.ts           # IP detection logic
+    │   ├── git-updater.ts          # Git operations
+    │   ├── config.ts               # Configuration management
+    │   └── types.ts                # TypeScript interfaces
+    ├── scripts/
+    │   └── run-once.sh             # Cron execution script
+    ├── package.json                # Client dependencies
+    ├── tsconfig.json               # TypeScript configuration
+    ├── Dockerfile                  # Docker build instructions
+    ├── docker-compose.yml          # Docker Compose configuration
+    └── env.template                # Environment variables template
 ```
 
 ---
@@ -297,12 +300,14 @@ dynamic-dns-gh-pages/
 ### Build
 
 ```bash
+cd client
 npm run build
 ```
 
 ### Run Once (Single Check)
 
 ```bash
+cd client
 npm run once
 ```
 
@@ -359,8 +364,8 @@ npm run clean
 
 ```bash
 # Ensure SSH keys have correct permissions
-chmod 600 ssh-keys/id_rsa
-chmod 644 ssh-keys/id_rsa.pub
+chmod 600 client/ssh-keys/id_rsa
+chmod 644 client/ssh-keys/id_rsa.pub
 ```
 
 **Git Push Authentication:**

@@ -1,20 +1,16 @@
 FROM node:20-alpine
 
-WORKDIR /app
+WORKDIR /app/client
 
 RUN apk add --no-cache git
 
-COPY client/package*.json ./client/
-WORKDIR /app/client
+COPY package*.json ./
 RUN npm ci
 
-COPY client/tsconfig.json ./
-COPY client/src ./src
+COPY tsconfig.json ./
+COPY src ./src
 RUN npm run build
-
-WORKDIR /app
-COPY docs ./docs
 
 ENV NODE_ENV=production
 
-CMD ["node", "client/dist/index.js", "daemon"]
+CMD ["node", "dist/index.js", "daemon"]

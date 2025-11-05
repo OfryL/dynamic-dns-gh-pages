@@ -4,7 +4,7 @@ services:
   dynamic-dns:
     build:
       context: .
-      dockerfile: client/Dockerfile
+      dockerfile: Dockerfile
     container_name: dynamic-dns-client
     restart: unless-stopped
     environment:
@@ -13,8 +13,8 @@ services:
       - GIT_USER_NAME=${GIT_USER_NAME:-Dynamic DNS Bot}
       - GIT_USER_EMAIL=${GIT_USER_EMAIL:-bot@dynamic-dns.local}
     volumes:
-      - ./.git:/app/.git
-      - ./docs:/app/docs
+      - ../.git:/app/.git
+      - ../docs:/app/docs
       - ./ssh-keys:/root/.ssh:ro
     env_file:
       - .env
