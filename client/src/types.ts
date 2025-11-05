@@ -8,7 +8,8 @@ export interface Config {
   ipApiUrl: string;
   gitUserName: string;
   gitUserEmail: string;
-  htmlFilePath: string;
+  htmlTemplatePath: string;
+  htmlOutputPath: string;
 }
 
 export type RunMode = 'daemon' | 'once';

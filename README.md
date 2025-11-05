@@ -64,7 +64,8 @@ graph TD
 
 **Components:**
 - **TypeScript Client**: Monitors IP and manages git operations
-- **docs/index.html**: Stores IP data in meta tags and provides redirect
+- **client/index.template.html**: HTML template with placeholders
+- **docs/index.html**: Generated output with actual IP data and redirect
 - **Template System**: Uses placeholders ({{IP}}, {{UPDATED_AT}}) for dynamic content
 - **GitHub Actions**: Optional cloud-based execution
 
@@ -116,7 +117,8 @@ cp env.template .env
 | `IP_API_URL` | `https://api.ipify.org?format=json` | API endpoint for IP detection |
 | `GIT_USER_NAME` | `Dynamic DNS Bot` | Git commit author name |
 | `GIT_USER_EMAIL` | `bot@dynamic-dns.local` | Git commit author email |
-| `HTML_FILE_PATH` | `docs/index.html` | Path to HTML template file (optional) |
+| `HTML_TEMPLATE_PATH` | `client/index.template.html` | Path to HTML template file (optional) |
+| `HTML_OUTPUT_PATH` | `docs/index.html` | Path to output HTML file (optional) |
 
 **Alternative IP APIs:**
 - `https://api.ipify.org?format=json`
@@ -276,8 +278,7 @@ dynamic-dns-gh-pages/
 │   └── workflows/
 │       └── update-ip.yml           # GitHub Actions workflow
 ├── docs/                           # GitHub Pages content
-│   ├── index.html                  # Redirect page
-│   └── ip.json                     # Current IP data
+│   └── index.html                  # Generated redirect page with IP data
 └── client/                         # TypeScript client
     ├── src/
     │   ├── index.ts                # Main entry point
@@ -287,6 +288,7 @@ dynamic-dns-gh-pages/
     │   └── types.ts                # TypeScript interfaces
     ├── scripts/
     │   └── run-once.sh             # Cron execution script
+    ├── index.template.html         # HTML template with placeholders
     ├── package.json                # Client dependencies
     ├── tsconfig.json               # TypeScript configuration
     ├── Dockerfile                  # Docker build instructions

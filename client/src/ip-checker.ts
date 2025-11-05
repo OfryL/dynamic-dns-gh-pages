@@ -26,7 +26,7 @@ export async function loadPreviousIP(filePath: string): Promise<string | undefin
 
 export async function checkIPChange(config: Config): Promise<IPCheckResult> {
   const currentIP = await fetchCurrentIP(config.ipApiUrl);
-  const previousIP = await loadPreviousIP(config.htmlFilePath);
+  const previousIP = await loadPreviousIP(config.htmlOutputPath);
 
   const changed = currentIP !== previousIP;
 

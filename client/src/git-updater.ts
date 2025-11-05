@@ -11,20 +11,20 @@ function execGit(command: string, cwd: string): void {
   }
 }
 
-export async function updateHTMLFile(ip: string, filePath: string): Promise<void> {
+export async function updateHTMLFile(ip: string, templatePath: string, outputPath: string): Promise<void> {
   const updatedAt = new Date().toISOString();
 
-  const htmlTemplate = await readFile(filePath, 'utf-8');
+  const htmlTemplate = await readFile(templatePath, 'utf-8');
 
   const updatedHTML = htmlTemplate
     .replace(/\{\{IP\}\}/g, ip)
     .replace(/\{\{UPDATED_AT\}\}/g, updatedAt);
 
-  await writeFile(filePath, updatedHTML, 'utf-8');
+  await writeFile(outputPath, updatedHTML, 'utf-8');
 }
 
 export async function commitAndPush(config: Config, ip: string): Promise<void> {
-  const repoRoot = dirname(dirname(config.htmlFilePath));
+  const repoRoot = dirname(dirname(config.htmlOutputPath));
 
   execGit(`git config user.name "${config.gitUserName}"`, repoRoot);
   execGit(`git config user.email "${config.gitUserEmail}"`, repoRoot);
@@ -45,6 +45,6 @@ export async function commitAndPush(config: Config, ip: string): Promise<void> {
 }
 
 export async function updateAndCommit(config: Config, ip: string): Promise<void> {
-  await updateHTMLFile(ip, config.htmlFilePath);
+  await updateHTMLFile(ip, config.htmlTemplatePath, config.htmlOutputPath);
   await commitAndPush(config, ip);
 }
