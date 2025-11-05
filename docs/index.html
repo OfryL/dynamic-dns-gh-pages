@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic DNS Redirect</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dynamic DNS</h1>
+        <p>Redirecting to your current IP address...</p>
+        <div class="spinner"></div>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function redirect() {
+            try {
+                const response = await fetch('./ip.json');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch IP data');
+                }
+
+                const data = await response.json();
+                const ip = data.ip;
+
+                if (!ip) {
+                    throw new Error('No IP address found');
+                }
+
+                document.getElementById('status').textContent = `Redirecting to ${ip}...`;
+
+                setTimeout(() => {
+                    window.location.href = `http://${ip}`;
+                }, 1000);
+
+            } catch (error) {
+                document.getElementById('status').innerHTML =
+                    `<div class="error">Error: ${error.message}<br>Please try again later.</div>`;
+                console.error('Redirect error:', error);
+            }
+        }
+
+        redirect();
+    </script>
+</body>
+</html>

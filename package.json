@@ -1,0 +1,23 @@
+{
+  "name": "dynamic-dns-gh-pages",
+  "version": "1.0.0",
+  "description": "Dynamic DNS solution using GitHub Pages to redirect to your current public IP",
+  "private": true,
+  "workspaces": [
+    "client"
+  ],
+  "scripts": {
+    "install:client": "cd client && npm install",
+    "build": "cd client && npm run build",
+    "daemon": "cd client && npm run daemon",
+    "once": "cd client && npm run once"
+  },
+  "keywords": [
+    "dynamic-dns",
+    "github-pages",
+    "ip-tracking",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT"
+}

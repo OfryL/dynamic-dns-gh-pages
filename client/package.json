@@ -1,0 +1,28 @@
+{
+  "name": "dynamic-dns-client",
+  "version": "1.0.0",
+  "description": "TypeScript client for monitoring and updating public IP address",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "daemon": "npm run build && node dist/index.js daemon",
+    "once": "npm run build && node dist/index.js once",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "dynamic-dns",
+    "ip-tracking",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0"
+  }
+}
